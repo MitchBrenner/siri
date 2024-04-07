@@ -1,9 +1,32 @@
+'use client';
+import Messages from "@/components/Messages";
+import Recorder from "@/components/Recorder";
 import { SettingsIcon } from "lucide-react";
 import Image from "next/image";
+import { useRef } from "react";
 
 export default function Home() {
+
+  const fileRef = useRef<HTMLInputElement>(null);
+  const submitButtonRef = useRef<HTMLInputElement>(null);
+
+  const uploadAudio = (blob: Blob) => {
+
+    const url = URL.createObjectURL(blob);
+
+    const file = new File([blob], 'audio.wav', { type: blob.type });
+
+    // set the file of the hidden file input field
+    if (fileRef.current) {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      fileRef.current.files = dataTransfer.files;
+    }
+
+  }
+
   return (
-    <main className="">
+    <main className="bg-black h-screen overflow-y-scroll">
 
       {/* header */}
       <header
@@ -25,13 +48,27 @@ export default function Home() {
 
       {/* form */}
 
-      <form>
+      <form className="flex flex-col bg-black">
         {/* Messages */}
-        <div></div>
+        <div
+          className="flex-1 bg-gradient-to-b from-purple-500 to-black"
+        >
+          <Messages />
+        </div>
 
         {/* Hidden inputs */}
-        <input type="file" />
-        <input type="submit" />
+        <input type="file" hidden ref={fileRef}/>
+        <input type="submit" hidden ref={submitButtonRef}/>
+
+        <div className="fixed bottom-0 w-full overflow-hidden bg-black rounded-t-3xl">
+
+          {/* recorder */}
+          <Recorder />
+          <div>
+            {/* Voice synthesizer -- output of assistant voice */}
+          </div>
+
+        </div>
       </form>
 
 
